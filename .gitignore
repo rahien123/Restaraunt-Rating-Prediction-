@@ -1,0 +1,13 @@
+# Bỏ qua folder môi trường ảo
+venv/
+.venv/
+env/
+
+# Bỏ qua file hệ thống
+__pycache__/
+.DS_Store
+.vscode/
+
+# Bỏ qua dữ liệu
+data/raw/
+data/processed/
