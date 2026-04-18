@@ -3,11 +3,19 @@ venv/
 .venv/
 env/
 
-# Bỏ qua file hệ thống
+# Bỏ qua file hệ thống & IDE
 __pycache__/
 .DS_Store
 .vscode/
+.ipynb_checkpoints/
+*.log
+# File tạm của Code Runner
+tempCodeRunnerFile.py
+src/features/tempCodeRunnerFile.py
 
-# Bỏ qua dữ liệu
-data/raw/
-data/processed/
+# Bỏ qua dữ liệu (Giữ lại folder nhưng bỏ qua file bên trong)
+data/raw/*
+data/processed/*
+
+# Bỏ qua các file cấu hình cá nhân hoặc tạm thời
+.env
