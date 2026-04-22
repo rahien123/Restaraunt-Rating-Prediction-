@@ -13,9 +13,5 @@ __pycache__/
 tempCodeRunnerFile.py
 src/features/tempCodeRunnerFile.py
 
-# Bỏ qua dữ liệu (Giữ lại folder nhưng bỏ qua file bên trong)
-data/raw/*
-data/processed/*
-
 # Bỏ qua các file cấu hình cá nhân hoặc tạm thời
 .env
