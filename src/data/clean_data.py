@@ -2,7 +2,7 @@ import pandas as pd
 from src.constants import COUNTRY_CODE_PATH
 
 def clean_basic(df):
-    print(" Cleaning data...")
+    print(" Cleaning data")
     
     df_clean = df.copy()
     
@@ -26,7 +26,7 @@ def clean_basic(df):
     # Thực hiện LEFT JOIN dựa trên cột chung là 'Country Code'
     df_final = pd.merge(df_clean, df_country, on='Country Code', how='left')
     
-    print(f"-> Clean hoàn tất, kích thước dữ liệu hiện tại: {df_final.shape}")
+    print(f"Clean hoàn tất, kích thước dữ liệu hiện tại: {df_final.shape}")
     return df_final
  
 

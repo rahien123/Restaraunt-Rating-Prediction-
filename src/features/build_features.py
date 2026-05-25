@@ -13,7 +13,7 @@ def get_da_data(df_in):
     cols_to_drop_da = ['Restaurant ID', 'Country Code', 'Locality Verbose']
     df_da = df_da.drop(columns=[col for col in cols_to_drop_da if col in df_da.columns], errors='ignore')
     
-    print(f"-> Hoàn tất xử lí dữ liệu DA. Kích thước: {df_da.shape}")
+    print(f"Hoàn tất xử lí dữ liệu DA. Kích thước: {df_da.shape}")
     return df_da
 
 def get_ds_data(df_in):
@@ -61,5 +61,5 @@ def get_ds_data(df_in):
     df_train = df_train.drop(columns=['rating_numeric_encoded'], errors='ignore')
     df_test = df_test.drop(columns=['rating_numeric_encoded'], errors='ignore')
     
-    print(f"-> Hoàn tất xử lí dữ liệu DS. Train: {df_train.shape[0]} dòng | Test: {df_test.shape[0]} dòng")
+    print(f"Hoàn tất xử lí dữ liệu DS. Train: {df_train.shape[0]} dòng | Test: {df_test.shape[0]} dòng")
     return df_train, df_test
