@@ -54,12 +54,14 @@ def get_ds_data(df_in):
     df = pd.concat([df, phys_dummies], axis=1)
 
     df['Salary_Midpoint'] = df['Salary_Range'].apply(extract_salary_midpoint)
-    df['Burnout_Level'] = df['Burnout_Level'].cat.reorder_categories(['Low', 'Medium', 'High'], ordered=True)
 
+    df['Burnout_Level'] = df['Burnout_Level'].map({'Low': 0, 'Medium': 1, 'High': 2})
+    df['Burnout_Level'] = pd.to_numeric(df['Burnout_Level'])
+    
     #group job rồi mới encode
     df['Job_Role'] = group_job_role(df)
     cat_cols = ['Gender', 'Region', 'Industry', 'Job_Role', 'Work_Arrangement', 'Mental_Health_Status']
     df = pd.get_dummies(df, columns=cat_cols, drop_first=True, dtype=int)
     
-    drop_cols = ['Survey_Date', 'Salary_Range', 'Physical_Health_Issues', 'Burnout_Level','Mental_Health_Status_Burnout']
+    drop_cols = ['Survey_Date', 'Salary_Range', 'Physical_Health_Issues', 'Mental_Health_Status_Burnout']
     return df.drop(columns=[c for c in drop_cols if c in df.columns]).select_dtypes(include=['number'])
