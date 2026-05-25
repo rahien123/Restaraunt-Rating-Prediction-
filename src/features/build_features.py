@@ -1,67 +1,65 @@
 import pandas as pd
-import re
+import numpy as np
 
 from src.data.clean_data import clean_basic
 
-def extract_salary_midpoint(s):
-    nums = re.findall(r'\d+', str(s).replace('$', '').replace('K', ''))
-    if len(nums) == 2: return (int(nums[0]) + int(nums[1])) * 500
-    return 130000 if '120' in str(s) else 0
-
-def process_physical_issues(df):
-    temp = df['Physical_Health_Issues'].str.split('; ')
-    #đếm physical issuse
-    count = temp.apply(lambda x: len([i for i in x if i != 'None']))
-    
-    dummies = pd.get_dummies(temp.apply(pd.Series).stack()).groupby(level=0).sum()
-    if 'None' in dummies.columns:
-        dummies = dummies.drop(columns=['None'])
-    dummies.columns = [f'has_{col}' for col in dummies.columns]
-    
-    return dummies, count
-
-#group 24 nhóm về còn n + other nhóm
-def group_job_role(df, top_n=10):
-    top_jobs = df['Job_Role'].value_counts().nlargest(top_n).index
-    return df['Job_Role'].apply(lambda x: x if x in top_jobs else 'Other')
-
 def get_da_data(df_in):
+    print("\n--- DA Feature Engineering ")
+    # 1. Làm sạch thô dữ liệu dùng chung
     df = clean_basic(df_in)
-    #thêm các cột boolean cho physical health issuse
-    phys_dummies, phys_count = process_physical_issues(df)
-    df = pd.concat([df, phys_dummies], axis=1)
-
-    #đếm số bệnh physical
-    df['Physical_Issues_Count'] = phys_count
-
-    #lương trung bình
-    df['Salary_Midpoint'] = df['Salary_Range'].apply(extract_salary_midpoint)
-
-    # 1: Low, 2: Med, 3: High
-    df['Burnout_Level'] = df['Burnout_Level'].cat.reorder_categories(['Low', 'Medium', 'High'], ordered=True)
+    df_da = df.copy()
     
-    # Gom nhóm Job Role
-    df['Job_Role_Grouped'] = group_job_role(df)
+    # 2.Drop những cột thuần định danh hệ thống hoặc thừa thãi thông tin
+    cols_to_drop_da = ['Restaurant ID', 'Country Code', 'Locality Verbose']
+    df_da = df_da.drop(columns=[col for col in cols_to_drop_da if col in df_da.columns], errors='ignore')
     
-    drop_cols = ['Survey_Date', 'Physical_Health_Issues', 'Job_Role']
-    return df.drop(columns=drop_cols)
+    print(f"-> Hoàn tất xử lí dữ liệu DA. Kích thước: {df_da.shape}")
+    return df_da
 
 def get_ds_data(df_in):
-    df = clean_basic(df_in)
-
-    # DS không cần Count (tránh đa cộng tuyến)
-    phys_dummies, _ = process_physical_issues(df) 
-    df = pd.concat([df, phys_dummies], axis=1)
-
-    df['Salary_Midpoint'] = df['Salary_Range'].apply(extract_salary_midpoint)
-
-    df['Burnout_Level'] = df['Burnout_Level'].map({'Low': 0, 'Medium': 1, 'High': 2})
-    df['Burnout_Level'] = pd.to_numeric(df['Burnout_Level'])
+    print("\n--- DS Feature Engineering ")
     
-    #group job rồi mới encode
-    df['Job_Role'] = group_job_role(df)
-    cat_cols = ['Gender', 'Region', 'Industry', 'Job_Role', 'Work_Arrangement', 'Mental_Health_Status']
-    df = pd.get_dummies(df, columns=cat_cols, drop_first=True, dtype=int)
+    df_ds = clean_basic(df_in) 
     
-    drop_cols = ['Survey_Date', 'Salary_Range', 'Physical_Health_Issues', 'Mental_Health_Status_Burnout']
-    return df.drop(columns=[c for c in drop_cols if c in df.columns]).select_dtypes(include=['number'])
+    # 1. Tạo nhãn số tạm thời
+    if 'Rating text' in df_ds.columns:
+        rating_mapping = {'Not rated': -1, 'Poor': 0, 'Average': 1, 'Good': 2, 'Very Good': 3, 'Excellent': 4}
+        df_ds['rating_numeric_encoded'] = df_ds['Rating text'].map(rating_mapping)
+    else:
+        df_ds['rating_numeric_encoded'] = -1
+        
+    # 2. Xóa các cột rác và cột gây rò rỉ dữ liệu
+    cols_to_drop_ds = [
+        'Restaurant ID', 'Restaurant Name', 'Address', 'Locality', 
+        'Locality Verbose', 'Rating color', 'Rating text', 'Country Code'
+    ]
+    df_ds = df_ds.drop(columns=[col for col in cols_to_drop_ds if col in df_ds.columns], errors='ignore')
+    
+    # 3. BINARY ENCODING 
+    binary_cols = ['Has Table booking', 'Has Online delivery', 'Is delivering now']
+    for col in binary_cols:
+        if col in df_ds.columns and df_ds[col].dtype == 'object':
+            df_ds[col] = df_ds[col].map({'Yes': 1, 'No': 0}).fillna(0).astype(int)
+            
+    # 4. ONE-HOT ENCODING
+    categorical_cols = ['Country Name', 'Currency']
+    categorical_cols = [col for col in categorical_cols if col in df_ds.columns]
+    if categorical_cols:
+        df_ds = pd.get_dummies(df_ds, columns=categorical_cols, drop_first=True, dtype=int)
+        
+    # 5. FREQUENCY ENCODING
+    for col in ['City', 'Cuisines']:
+        if col in df_ds.columns:
+            freq = df_ds[col].value_counts() / len(df_ds)
+            df_ds[col] = df_ds[col].map(freq)
+            
+    # 6. TÁCH TRAIN / TEST BẰNG BÚT ĐÁNH DẤU TẠM THỜI
+    df_train = df_ds[df_ds['rating_numeric_encoded'] != -1].copy()
+    df_test = df_ds[df_ds['rating_numeric_encoded'] == -1].copy()
+    
+    # 7. XÓA BỎ BÚT ĐÁNH DẤU - Tránh lỗi Data Leakage, trả lại ma trận số thuần khiết cho DS
+    df_train = df_train.drop(columns=['rating_numeric_encoded'], errors='ignore')
+    df_test = df_test.drop(columns=['rating_numeric_encoded'], errors='ignore')
+    
+    print(f"-> Hoàn tất xử lí dữ liệu DS. Train: {df_train.shape[0]} dòng | Test: {df_test.shape[0]} dòng")
+    return df_train, df_test
