@@ -30,22 +30,22 @@ def get_ds_data(df_in):
         
     # 2. Xóa các cột rác và cột gây rò rỉ dữ liệu
     cols_to_drop_ds = [
-        'Restaurant ID', 'Restaurant Name', 'Address', 'Locality', 
-        'Locality Verbose', 'Rating color', 'Rating text', 'Country Code'
+        'Restaurant ID', 'Restaurant Name', 'Address', 'Locality', 'Currency',
+        'Locality Verbose', 'Rating color', 'Rating text', 'Country Code', 'Country'
     ]
     df_ds = df_ds.drop(columns=[col for col in cols_to_drop_ds if col in df_ds.columns], errors='ignore')
     
     # 3. BINARY ENCODING 
     binary_cols = ['Has Table booking', 'Has Online delivery', 'Is delivering now']
     for col in binary_cols:
-        if col in df_ds.columns and df_ds[col].dtype == 'object':
+        if col in df_ds.columns:
             df_ds[col] = df_ds[col].map({'Yes': 1, 'No': 0}).fillna(0).astype(int)
             
     # 4. ONE-HOT ENCODING
-    categorical_cols = ['Country Name', 'Currency']
-    categorical_cols = [col for col in categorical_cols if col in df_ds.columns]
-    if categorical_cols:
-        df_ds = pd.get_dummies(df_ds, columns=categorical_cols, drop_first=True, dtype=int)
+    # categorical_cols = ['Country', 'Currency']
+    # categorical_cols = [col for col in categorical_cols if col in df_ds.columns]
+    # if categorical_cols:
+    #     df_ds = pd.get_dummies(df_ds, columns=categorical_cols, drop_first=True, dtype=int)
         
     # 5. FREQUENCY ENCODING
     for col in ['City', 'Cuisines']:
