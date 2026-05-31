@@ -1,0 +1,91 @@
+NHÀ HÀNG ĐẦU VÀO (INPUT):
+Tên nhà hàng: Le Petit Souffle
+Thành phố: Makati City
+Ẩm thực: French, Japanese, Desserts
+Mức giá: 3/4
+Điểm đánh giá: 4.8/5.0
+Đặt bàn: Yes
+Giao hàng: No
+
+
+CÁC NHÀ HÀNG TƯƠNG TỰ (TOP 10):
+1. Tokyo Mon Amour
+   - Thành phố: New Delhi
+   - Ẩm thực: Japanese, French
+   - Mức giá: 4/4
+   - Điểm đánh giá: 3.1/5.0
+   - Đặt bàn: Yes
+   - Giao hàng: No
+
+2. Izakaya Kikufuji
+   - Thành phố: Makati City
+   - Ẩm thực: Japanese
+   - Mức giá: 3/4
+   - Điểm đánh giá: 4.5/5.0
+   - Đặt bàn: Yes
+   - Giao hàng: No
+
+3. Rhubarb Le Restaurant
+   - Thành phố: Singapore
+   - Ẩm thực: French
+   - Mức giá: 4/4
+   - Điểm đánh giá: 3.9/5.0
+   - Đặt bàn: No
+   - Giao hàng: No
+
+4. Le Club
+   - Thành phố: Puducherry
+   - Ẩm thực: French, Continental, North Indian
+   - Mức giá: 4/4
+   - Điểm đánh giá: 3.5/5.0
+   - Đặt bàn: No
+   - Giao hàng: No
+
+5. Le Dupleix
+   - Thành phố: Puducherry
+   - Ẩm thực: North Indian, French, Continental
+   - Mức giá: 4/4
+   - Điểm đánh giá: 3.8/5.0
+   - Đặt bàn: No
+   - Giao hàng: No
+
+6. Le Cirque - The Leela Palace
+   - Thành phố: New Delhi
+   - Ẩm thực: French, Italian
+   - Mức giá: 4/4
+   - Điểm đánh giá: 3.8/5.0
+   - Đặt bàn: Yes
+   - Giao hàng: No
+
+7. The French by Simon Rogan - The Midland
+   - Thành phố: Manchester
+   - Ẩm thực: French
+   - Mức giá: 4/4
+   - Điểm đánh giá: 4.3/5.0
+   - Đặt bàn: No
+   - Giao hàng: No
+
+8. Jaan
+   - Thành phố: Singapore
+   - Ẩm thực: French
+   - Mức giá: 4/4
+   - Điểm đánh giá: 3.8/5.0
+   - Đặt bàn: No
+   - Giao hàng: No
+
+9. Duck City Bistro
+   - Thành phố: Davenport
+   - Ẩm thực: American, French
+   - Mức giá: 4/4
+   - Điểm đánh giá: 3.7/5.0
+   - Đặt bàn: No
+   - Giao hàng: No
+
+10. Django
+   - Thành phố: Des Moines
+   - Ẩm thực: French
+   - Mức giá: 3/4
+   - Điểm đánh giá: 4.3/5.0
+   - Đặt bàn: No
+   - Giao hàng: No
+
