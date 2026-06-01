@@ -23,7 +23,7 @@ def check_overfitting(model, X_train, y_train, X_valid, y_valid, task='regressio
         print(f"MAE  - Train: {train_mae:.4f}, Valid: {test_mae:.4f}")
         print(f"R²   - Train: {train_r2:.4f}, Valid: {test_r2:.4f}")
         
-        if train_r2 > test_r2 + 0.15: # Nếu R2 train cao hơn test quá 15%
+        if train_r2 > test_r2 + 0.15 or abs(train_mae - test_mae > 0.05): # Nếu R2 train cao hơn test quá 15%
             print("CẢNH BÁO: Mô hình có dấu hiệu Overfitting (Train tốt hơn Valid quá nhiều)!")
         else:
             print("Mô hình ổn định (Gap giữa Train và Valid nhỏ).")
